@@ -22,6 +22,17 @@ public class AnswerController {
     @Autowired
     AnswerRepository answerRepository;
 
+    @GetMapping
+    public ResponseEntity<?> getAllAnswers() {
+        List<AnswerEntity> answerEntities = answerRepository.findAll();
+        List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
+
+        Response response = new Response(true, "");
+        response.getData().put("answers", answers);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{questionId}")
     public ResponseEntity<?> getAllAnswersByQuestionId(@PathVariable("questionId") String questionId) {
         List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionId(questionId);
@@ -40,23 +51,22 @@ public class AnswerController {
             return ResponseEntity.status(404).body(new Response(false, "No match found"));
         }
         Response response = new Response(true, "");
-        response.getData().put("question", answerEntity);
+        response.getData().put("answer", answerEntity);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/{questionId}")
     public ResponseEntity<?> createAnswer(@RequestBody @Valid AnswerReqModel answerReqModel, @PathVariable("questionId") String questionId) {
-
         AnswerEntity answerEntity = new AnswerEntity(answerReqModel);
         answerEntity.setQuestionId(questionId);
-
+        //todo: answerEntity.setUserId();
         Response response = new Response(true, "Answer has been created");
         answerEntity = answerRepository.save(answerEntity);
         response.getData().put("answer", answerEntity);
         return ResponseEntity.status(201).body(response);
     }
 
-    @PatchMapping("/answerDetails/{answerId}/upVote")
+    @PatchMapping("/answerDetails/{answerId}/upvote")
     public ResponseEntity<?> upVote(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
@@ -69,7 +79,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/answerDetails/{answerId}/downVote")
+    @PatchMapping("/answerDetails/{answerId}/downvote")
     public ResponseEntity<?> downVote(@PathVariable("answerId") String answerId) {
         //
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);

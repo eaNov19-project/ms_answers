@@ -41,6 +41,7 @@ public class AnswerEntity {
         answerModel.setDate(this.created);
         answerModel.setUpvotes(this.votes);
         answerModel.setUserId(this.userId);
+        //todo: Add setQuestionId to to answerModel
         return answerModel;
     }
 
