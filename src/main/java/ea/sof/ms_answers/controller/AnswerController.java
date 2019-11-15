@@ -93,4 +93,31 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
+    @PatchMapping("/answerDetails/{answerId}")
+    public ResponseEntity<?> updateAnswer(@PathVariable("answerId") String answerId, @RequestBody @Valid AnswerReqModel answerReqModel) {
+        AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
+        if(answerEntity == null) {
+            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+        }
+        AnswerEntity newAnswerEntity = new AnswerEntity(answerReqModel);
+        answerEntity.setBody(newAnswerEntity.getBody());
+        answerEntity.setLastEdited(newAnswerEntity.getCreated());
+        answerEntity = answerRepository.save(answerEntity);
+        Response response = new Response(true, "Answer updated");
+        response.getData().put("answer", answerEntity);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/answerDetails/{answerId}")
+    public ResponseEntity<?> deleteAnswer(@PathVariable("answerId") String answerId) {
+        AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
+        if(answerEntity == null) {
+            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+        }
+        answerRepository.delete(answerEntity);
+
+        Response response = new Response(true, "Answer deleted");
+        response.getData().put("answer", answerEntity);
+        return ResponseEntity.ok(response);
+    }
 }
