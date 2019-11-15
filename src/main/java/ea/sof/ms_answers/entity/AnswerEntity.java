@@ -1,7 +1,7 @@
 package ea.sof.ms_answers.entity;
 
 import ea.sof.ms_answers.model.AnswerReqModel;
-import ea.sof.shared.entities.CommentEntity;
+import ea.sof.shared.entities.CommentAnswerEntity;
 import ea.sof.shared.models.Answer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,7 +23,7 @@ public class AnswerEntity {
     private LocalDateTime created;
     private LocalDateTime lastEdited;
     private Integer votes = 0;
-    private List<CommentEntity> topComments = new ArrayList<>();
+    private List<CommentAnswerEntity> topComments = new ArrayList<>();
     private String questionId;
 
     public AnswerEntity(AnswerReqModel answerReqModel) {
@@ -41,7 +41,7 @@ public class AnswerEntity {
         answerModel.setDate(this.created);
         answerModel.setUpvotes(this.votes);
         answerModel.setUserId(this.userId);
-        //todo: Add setQuestionId to to answerModel
+
         return answerModel;
     }
 

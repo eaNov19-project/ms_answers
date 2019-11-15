@@ -3,9 +3,7 @@ package ea.sof.ms_answers.controller;
 import ea.sof.ms_answers.entity.AnswerEntity;
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.ms_answers.repository.AnswerRepository;
-import ea.sof.shared.entities.CommentEntity;
 import ea.sof.shared.models.Answer;
-import ea.sof.shared.models.Comment;
 import ea.sof.shared.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +31,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{questionId}")
+    @GetMapping("/question/{questionId}")
     public ResponseEntity<?> getAllAnswersByQuestionId(@PathVariable("questionId") String questionId) {
         List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionId(questionId);
         List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
@@ -44,7 +42,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/answerDetails/{answerId}")
+    @GetMapping("/{answerId}")
     public ResponseEntity<?> getAnswerById(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
@@ -66,7 +64,7 @@ public class AnswerController {
         return ResponseEntity.status(201).body(response);
     }
 
-    @PatchMapping("/answerDetails/{answerId}/upvote")
+    @PatchMapping("/{answerId}/upvote")
     public ResponseEntity<?> upVote(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
@@ -79,7 +77,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/answerDetails/{answerId}/downvote")
+    @PatchMapping("/{answerId}/downvote")
     public ResponseEntity<?> downVote(@PathVariable("answerId") String answerId) {
         //
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
@@ -93,7 +91,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/answerDetails/{answerId}")
+    @PatchMapping("/{answerId}")
     public ResponseEntity<?> updateAnswer(@PathVariable("answerId") String answerId, @RequestBody @Valid AnswerReqModel answerReqModel) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
@@ -108,7 +106,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @DeleteMapping("/answerDetails/{answerId}")
+    @DeleteMapping("/{answerId}")
     public ResponseEntity<?> deleteAnswer(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
