@@ -6,6 +6,7 @@ import ea.sof.ms_answers.repository.AnswerRepository;
 import ea.sof.shared.models.Answer;
 import ea.sof.shared.models.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,10 +47,10 @@ public class AnswerController {
     public ResponseEntity<?> getAnswerById(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
-            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(false, "No match found"));
         }
         Response response = new Response(true, "");
-        response.getData().put("answer", answerEntity);
+        response.getData().put("answer", answerEntity.toAnswerModel());
         return ResponseEntity.ok(response);
     }
 
@@ -60,20 +61,20 @@ public class AnswerController {
         //todo: answerEntity.setUserId();
         Response response = new Response(true, "Answer has been created");
         answerEntity = answerRepository.save(answerEntity);
-        response.getData().put("answer", answerEntity);
-        return ResponseEntity.status(201).body(response);
+        response.getData().put("answer", answerEntity.toAnswerModel());
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{answerId}/upvote")
     public ResponseEntity<?> upVote(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
-            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(false, "No match found"));
         }
         answerEntity.upvote();
         answerEntity = answerRepository.save(answerEntity);
         Response response = new Response(true, "Answer upVoted");
-        response.getData().put("answer", answerEntity);
+        response.getData().put("answer", answerEntity.toAnswerModel());
         return ResponseEntity.ok(response);
     }
 
@@ -82,12 +83,12 @@ public class AnswerController {
         //
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
-            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(false, "No match found"));
         }
         answerEntity.downvote();
         answerEntity = answerRepository.save(answerEntity);
         Response response = new Response(true, "Answer downVoted");
-        response.getData().put("answer", answerEntity);
+        response.getData().put("answer", answerEntity.toAnswerModel());
         return ResponseEntity.ok(response);
     }
 
@@ -95,14 +96,14 @@ public class AnswerController {
     public ResponseEntity<?> updateAnswer(@PathVariable("answerId") String answerId, @RequestBody @Valid AnswerReqModel answerReqModel) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
-            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(false, "No match found"));
         }
         AnswerEntity newAnswerEntity = new AnswerEntity(answerReqModel);
         answerEntity.setBody(newAnswerEntity.getBody());
         answerEntity.setLastEdited(newAnswerEntity.getCreated());
         answerEntity = answerRepository.save(answerEntity);
         Response response = new Response(true, "Answer updated");
-        response.getData().put("answer", answerEntity);
+        response.getData().put("answer", answerEntity.toAnswerModel());
         return ResponseEntity.ok(response);
     }
 
@@ -110,12 +111,12 @@ public class AnswerController {
     public ResponseEntity<?> deleteAnswer(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
         if(answerEntity == null) {
-            return ResponseEntity.status(404).body(new Response(false, "No match found"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Response(false, "No match found"));
         }
         answerRepository.delete(answerEntity);
 
         Response response = new Response(true, "Answer deleted");
-        response.getData().put("answer", answerEntity);
+        response.getData().put("answer", answerEntity.toAnswerModel());
         return ResponseEntity.ok(response);
     }
 }
