@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: answer-ms
+  labels:
+    app: answer-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: answer-ms
+  template:
+    metadata:
+      labels:
+        app: answer-ms
+
+    spec:
+      containers:
+        - name: answer-ms
+          image: islamahmad/answer-ms:1.0.0
+          ports:
+            - containerPort: 8081
+          env:
+            #MONGODB
+            - name: MONGODB_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_HOST
+            - name: MONGODB_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_USERNAME
+            - name: MONGODB_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_PORT
+            - name: MONGODB_PASS
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_PASS
+            - name: MONGODB_AUTH
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_AUTH
+            - name: MONGODB_DATABASE
+              valueFrom:
+                configMapKeyRef:
+                  name: question-ms
+                  key: MONGODB_DATABASE

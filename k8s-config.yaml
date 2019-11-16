@@ -1,0 +1,11 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: answer-ms
+data:
+  MONGODB_HOST: "mongodb-sharded-1573848232.default.svc.cluster.local"
+  MONGODB_PORT: "27017"
+  MONGODB_PASS: "answers"
+  MONGODB_USERNAME: "answers"
+  MONGODB_DATABASE: "answers"
+  MONGODB_AUTH: "answers"
