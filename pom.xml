@@ -81,9 +81,11 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <finalName>ms_answers</finalName>
+                </configuration>
             </plugin>
         </plugins>
-        <finalName>ms_answers</finalName>
     </build>
 
     <repositories>
