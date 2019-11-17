@@ -25,30 +25,35 @@ spec:
             - name: MONGODB_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_HOST
             - name: MONGODB_USERNAME
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_USERNAME
             - name: MONGODB_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_PORT
             - name: MONGODB_PASS
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_PASS
             - name: MONGODB_AUTH
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_AUTH
             - name: MONGODB_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_DATABASE
+            - name: AUTHENTICATE_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: answer-ms
+                  key: AUTHENTICATE_SERVICE
