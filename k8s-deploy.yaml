@@ -5,7 +5,7 @@ metadata:
   labels:
     app: answer-ms
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: answer-ms
@@ -13,13 +13,10 @@ spec:
     metadata:
       labels:
         app: answer-ms
-
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/answer-ms:1.0.0
-          ports:
-            - containerPort: 8081
+          image: islamahmad/eaproj-answerms:1.0.0
           env:
             #MONGODB
             - name: MONGODB_HOST
@@ -57,3 +54,4 @@ spec:
                 configMapKeyRef:
                   name: answer-ms
                   key: AUTHENTICATE_SERVICE
+
