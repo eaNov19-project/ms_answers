@@ -1,5 +1,6 @@
 package ea.sof.ms_answers.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ea.sof.ms_answers.entity.AnswerEntity;
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.ms_answers.repository.AnswerRepository;
@@ -7,6 +8,7 @@ import ea.sof.ms_answers.service.AuthService;
 import ea.sof.shared.models.Answer;
 import ea.sof.shared.models.Response;
 import ea.sof.shared.models.TokenUser;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -66,8 +68,10 @@ public class AnswerController {
         if (!authCheckResp.getSuccess()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
         }
-        TokenUser decodedToken = (TokenUser) authCheckResp.getData().get("decoded_token");
+       // TokenUser decodedToken = (TokenUser) authCheckResp.getData().get("decoded_token");
 
+        ObjectMapper mapper = new ObjectMapper();
+        TokenUser decodedToken = mapper.convertValue(authCheckResp.getData().get("decoded_token"), TokenUser.class);
         AnswerEntity answerEntity = new AnswerEntity(answerReqModel);
         answerEntity.setQuestionId(questionId);
         answerEntity.setUserId(decodedToken.getUserId().toString());
