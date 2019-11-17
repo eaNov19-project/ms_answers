@@ -5,7 +5,7 @@ metadata:
   labels:
     app: answer-ms
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: answer-ms
@@ -13,42 +13,44 @@ spec:
     metadata:
       labels:
         app: answer-ms
-
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/answer-ms:1.0.0
-          ports:
-            - containerPort: 8081
+          image: islamahmad/eaproj-answerms:1.0.0
           env:
             #MONGODB
             - name: MONGODB_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_HOST
             - name: MONGODB_USERNAME
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_USERNAME
             - name: MONGODB_PORT
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_PORT
             - name: MONGODB_PASS
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_PASS
             - name: MONGODB_AUTH
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_AUTH
             - name: MONGODB_DATABASE
               valueFrom:
                 configMapKeyRef:
-                  name: question-ms
+                  name: answer-ms
                   key: MONGODB_DATABASE
+            - name: AUTHENTICATE_SERVICE
+              valueFrom:
+                configMapKeyRef:
+                  name: answer-ms
+                  key: AUTHENTICATE_SERVICE
