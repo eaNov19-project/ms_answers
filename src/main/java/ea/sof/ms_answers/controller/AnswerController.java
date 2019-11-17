@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/answers")
+@CrossOrigin
 public class AnswerController {
     @Autowired
     AnswerRepository answerRepository;
