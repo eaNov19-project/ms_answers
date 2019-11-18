@@ -20,6 +20,6 @@ public class HomeController {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<>("orders-service. Host: " + host, HttpStatus.OK);
+        return new ResponseEntity<>("Answer service. Host: " + host, HttpStatus.OK);
     }
 }
