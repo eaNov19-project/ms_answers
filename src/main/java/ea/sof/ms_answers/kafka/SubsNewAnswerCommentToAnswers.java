@@ -17,7 +17,7 @@ public class SubsNewAnswerCommentToAnswers {
 	AnswerRepository answerRepository;
 
 	@KafkaListener(topics = "${topicNewAnswerComment}", groupId = "${subsNewAnswerCommentToAnswers}")
-	public void newCommentQuestionEntity(String message) {
+	public void newCommentAnswerEntity(String message) {
 
 		System.out.println("SubsNewAnswerCommentToAnswers: New message from topic: " + message);
 
