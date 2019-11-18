@@ -1,6 +1,7 @@
 package ea.sof.ms_answers.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import ea.sof.ms_answers.entity.AnswerEntity;
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.ms_answers.repository.AnswerRepository;
@@ -10,8 +11,10 @@ import ea.sof.shared.models.Response;
 import ea.sof.shared.models.TokenUser;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,9 +27,18 @@ import java.util.stream.Collectors;
 @CrossOrigin
 public class AnswerController {
     @Autowired
+    KafkaTemplate<String, String> kafkaTemplate;
+
+    @Autowired
+    private Environment env;
+
+    @Autowired
     AnswerRepository answerRepository;
     @Autowired
     AuthService authService;
+
+
+    private Gson gson = new Gson();
 
     /*@GetMapping
     public ResponseEntity<?> getAllAnswers() {
@@ -80,6 +92,10 @@ public class AnswerController {
         Response response = new Response(true, "Answer has been created");
         answerEntity = answerRepository.save(answerEntity);
         response.getData().put("answer", answerEntity.toAnswerModel());
+
+
+//        kafkaTemplate.send(env.getProperty("topicNewAnswer"), gson.toJson(commentQuestionEntity));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 

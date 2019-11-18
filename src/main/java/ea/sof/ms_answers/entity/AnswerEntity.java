@@ -3,6 +3,7 @@ package ea.sof.ms_answers.entity;
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.shared.entities.CommentAnswerEntity;
 import ea.sof.shared.models.Answer;
+import ea.sof.shared.queue_models.AnswerQueueModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -44,6 +45,19 @@ public class AnswerEntity {
         answerModel.setQuestionId(this.questionId);
 
         return answerModel;
+    }
+
+    public AnswerQueueModel toAnswerQueueModel() {
+        AnswerQueueModel answerQueueModel = new AnswerQueueModel();
+        /*answerModel.setId(this.id);
+        answerModel.setBody(this.body);
+        answerModel.setDate(this.created);
+        answerModel.setUpvotes(this.votes);
+        answerModel.setUserId(this.userId);
+        answerModel.setQuestionId(this.questionId);
+
+        return answerModel;*/
+        return null;
     }
 
     public void upvote(){

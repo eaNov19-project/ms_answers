@@ -20,6 +20,18 @@
     </properties>
 
     <dependencies>
+        <!-- Kafka -->
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>${gson.version}</version>
+        </dependency>
+        <!-- END Kafka -->
+
         <dependency>
             <groupId>ea.sof</groupId>
             <artifactId>shared</artifactId>
