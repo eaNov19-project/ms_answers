@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -63,6 +64,7 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
+
     @GetMapping("/{answerId}")
     public ResponseEntity<?> getAnswerById(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
@@ -71,6 +73,15 @@ public class AnswerController {
         }
         Response response = new Response(true, "");
         response.getData().put("answer", answerEntity.toAnswerModel());
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/answers/top5/{questionId}")
+    public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
+        List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionId(questionId);
+        List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).sorted(Comparator.comparingInt(Answer::getVotes).reversed()).limit(5).collect(Collectors.toList());
+        Response response = new Response(true, "");
+        response.getData().put("answers", answers);
         return ResponseEntity.ok(response);
     }
 
