@@ -2,7 +2,10 @@ package ea.sof.ms_answers.entity;
 
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.shared.entities.CommentAnswerEntity;
+import ea.sof.shared.entities.CommentQuestionEntity;
 import ea.sof.shared.models.Answer;
+import ea.sof.shared.models.CommentAnswer;
+import ea.sof.shared.models.CommentQuestion;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -11,6 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @NoArgsConstructor
 @Data
@@ -43,6 +47,8 @@ public class AnswerEntity {
         answerModel.setUserId(this.userId);
         answerModel.setQuestionId(this.questionId);
 
+        List<CommentAnswer> topComments = this.topComments.stream().map(ca -> ca.toCommentAnswerModel()).collect(Collectors.toList());
+        answerModel.setTopComments(topComments);
         return answerModel;
     }
 
@@ -51,5 +57,14 @@ public class AnswerEntity {
     }
     public void downvote(){
         this.votes--;
+    }
+
+    public void addAnswerComment(CommentAnswerEntity commentAnswerEntity) {
+        topComments.add(commentAnswerEntity);
+
+        //remove the oldest
+        while (topComments.size() > 3){
+            topComments.remove(0);
+        }
     }
 }
