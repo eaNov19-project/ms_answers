@@ -97,7 +97,8 @@ public class AnswerController {
             response.setMessage("Answer has been created");
             response.addObject("answer", answerEntity.toAnswerModel());
             System.out.println("CreateAnswer :: Saved successfully. " + answerEntity.toString());
-            //send topicNewAnswer
+            //sending topicNewAnswer
+            System.out.println("topicNewAnswer:: sending new answer");
             kafkaTemplate.send(env.getProperty("topicNewAnswer"), gson.toJson(answerEntity.toAnswerQueueModel()));
         } catch (Exception ex) {
             response.setSuccess(false);
@@ -129,7 +130,8 @@ public class AnswerController {
             response.addObject("answer", answerEntity.toAnswerModel());
 
             System.out.println("Upvote :: Saved successfully. " + answerEntity.toString());
-
+            //sending topicAnswerVoted
+            System.out.println("topicAnswerVoted:: sending - upvote");
             kafkaTemplate.send(env.getProperty("topicAnswerVoted"), gson.toJson(answerEntity.toAnswerQueueModel()));
         }
         catch (Exception ex) {
@@ -163,6 +165,8 @@ public class AnswerController {
             response.addObject("answer", answerEntity.toAnswerModel());
             System.out.println("Downvote :: Saved successfully. " + answerEntity.toString());
 
+            //sending topicAnswerVoted
+            System.out.println("topicAnswerVoted:: sending - downvote");
             kafkaTemplate.send(env.getProperty("topicAnswerVoted"), gson.toJson(answerEntity.toAnswerQueueModel()));
         } catch (Exception ex) {
             response.setSuccess(false);

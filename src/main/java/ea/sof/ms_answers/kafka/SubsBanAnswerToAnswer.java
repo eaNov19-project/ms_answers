@@ -6,13 +6,21 @@ import ea.sof.ms_answers.repository.AnswerRepository;
 import ea.sof.shared.entities.CommentAnswerEntity;
 import ea.sof.shared.queue_models.AnswerQueueModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 public class SubsBanAnswerToAnswer {
     @Autowired
     AnswerRepository answerRepository;
+    @Autowired
+    private Environment env;
+
+    @Autowired
+    KafkaTemplate<String, String> kafkaTemplate;
+
 
     @KafkaListener(topics = "${topicBanAnswer}", groupId = "${subsBanAnswerToAnswer}")
     public void newCommentAnswerEntity(String message) {
@@ -30,6 +38,10 @@ public class SubsBanAnswerToAnswer {
             answerEntity.setActive(0);
             answerRepository.save(answerEntity);
             System.out.println("Answer is banned");
+
+            //sending topicUpdateBannedAnswer
+            System.out.println("topicUpdateBannedAnswer:: sending");
+            kafkaTemplate.send(env.getProperty("topicUpdateBannedAnswer"), gson.toJson(answerEntity.toAnswerQueueModel()));
         }
     }
 }
