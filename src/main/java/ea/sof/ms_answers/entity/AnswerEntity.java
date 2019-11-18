@@ -6,6 +6,7 @@ import ea.sof.shared.entities.CommentQuestionEntity;
 import ea.sof.shared.models.Answer;
 import ea.sof.shared.models.CommentAnswer;
 import ea.sof.shared.models.CommentQuestion;
+import ea.sof.shared.queue_models.AnswerQueueModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
@@ -50,6 +51,19 @@ public class AnswerEntity {
         List<CommentAnswer> topComments = this.topComments.stream().map(ca -> ca.toCommentAnswerModel()).collect(Collectors.toList());
         answerModel.setTopComments(topComments);
         return answerModel;
+    }
+
+    public AnswerQueueModel toAnswerQueueModel() {
+        AnswerQueueModel answerQueueModel = new AnswerQueueModel();
+        /*answerModel.setId(this.id);
+        answerModel.setBody(this.body);
+        answerModel.setDate(this.created);
+        answerModel.setUpvotes(this.votes);
+        answerModel.setUserId(this.userId);
+        answerModel.setQuestionId(this.questionId);
+
+        return answerModel;*/
+        return null;
     }
 
     public void upvote(){
