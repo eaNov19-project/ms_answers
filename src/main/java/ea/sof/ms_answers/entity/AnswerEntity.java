@@ -57,6 +57,7 @@ public class AnswerEntity {
         answerQueueModel.setId(this.id);
         answerQueueModel.setBody(this.body);
         answerQueueModel.setActive(this.active);
+        answerQueueModel.setQuestionId(this.questionId);
         return answerQueueModel;
     }
 
