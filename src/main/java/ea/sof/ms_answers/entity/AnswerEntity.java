@@ -30,13 +30,12 @@ public class AnswerEntity {
     private Integer votes = 0;
     private List<CommentAnswerEntity> topComments = new ArrayList<>();
     private String questionId;
+    private Integer active = 1;
 
     public AnswerEntity(AnswerReqModel answerReqModel) {
         this.body = answerReqModel.getBody();
         this.created = LocalDateTime.now();
         this.lastEdited = this.created;
-
-        //Todo: Add user id from logged in user token
     }
 
     public Answer toAnswerModel() {
@@ -47,7 +46,7 @@ public class AnswerEntity {
         answerModel.setUpvotes(this.votes);
         answerModel.setUserId(this.userId);
         answerModel.setQuestionId(this.questionId);
-
+        answerModel.setActive(this.active);
         List<CommentAnswer> topComments = this.topComments.stream().map(ca -> ca.toCommentAnswerModel()).collect(Collectors.toList());
         answerModel.setTopComments(topComments);
         return answerModel;
@@ -55,15 +54,10 @@ public class AnswerEntity {
 
     public AnswerQueueModel toAnswerQueueModel() {
         AnswerQueueModel answerQueueModel = new AnswerQueueModel();
-        /*answerModel.setId(this.id);
-        answerModel.setBody(this.body);
-        answerModel.setDate(this.created);
-        answerModel.setUpvotes(this.votes);
-        answerModel.setUserId(this.userId);
-        answerModel.setQuestionId(this.questionId);
-
-        return answerModel;*/
-        return null;
+        answerQueueModel.setId(this.id);
+        answerQueueModel.setBody(this.body);
+        answerQueueModel.setActive(this.active);
+        return answerQueueModel;
     }
 
     public void upvote(){
