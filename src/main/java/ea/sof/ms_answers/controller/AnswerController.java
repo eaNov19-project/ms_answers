@@ -6,10 +6,11 @@ import ea.sof.ms_answers.entity.AnswerEntity;
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.ms_answers.repository.AnswerRepository;
 import ea.sof.ms_answers.service.AuthService;
+import ea.sof.ms_answers.service.AuthServiceCircuitBreaker;
 import ea.sof.shared.models.Answer;
 import ea.sof.shared.models.Response;
 import ea.sof.shared.models.TokenUser;
-import lombok.val;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -21,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/answers")
 @CrossOrigin
+@Slf4j
 public class AnswerController {
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
@@ -38,9 +39,9 @@ public class AnswerController {
 
     @Autowired
     AnswerRepository answerRepository;
-    @Autowired
-    AuthService authService;
 
+    @Autowired
+    AuthServiceCircuitBreaker authService;
 
     private Gson gson = new Gson();
 
@@ -70,7 +71,7 @@ public class AnswerController {
     @GetMapping("/{answerId}")
     public ResponseEntity<?> getAnswerById(@PathVariable("answerId") String answerId) {
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
-        if(answerEntity == null) {
+        if (answerEntity == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match found"));
         }
         Response response = new Response(true, "");
@@ -94,7 +95,6 @@ public class AnswerController {
         if (!authCheckResp.getSuccess()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
         }
-       // TokenUser decodedToken = (TokenUser) authCheckResp.getData().get("decoded_token");
 
         ObjectMapper mapper = new ObjectMapper();
         TokenUser decodedToken = mapper.convertValue(authCheckResp.getData().get("decoded_token"), TokenUser.class);
@@ -105,25 +105,25 @@ public class AnswerController {
         Response response = new Response();
         try {
             answerEntity = answerRepository.save(answerEntity);
-            //response.getData().put("answer", answerEntity.toAnswerModel());
             response.setSuccess(true);
             response.setMessage("Answer has been created");
             response.addObject("answer", answerEntity.toAnswerModel());
-            System.out.println("CreateAnswer :: Saved successfully. " + answerEntity.toString());
+            log.info("CreateAnswer :: Saved successfully. " + answerEntity.toString());
+
             //sending topicNewAnswer
-            System.out.println("topicNewAnswer:: sending new answer");
+            log.info("topicNewAnswer:: sending new answer");
             kafkaTemplate.send(env.getProperty("topicNewAnswer"), gson.toJson(answerEntity.toAnswerQueueModel()));
         } catch (Exception ex) {
             response.setSuccess(false);
             response.setMessage(ex.getMessage());
-            System.out.println("CreateAnswer :: Error. " + ex.getMessage());
+            log.warn("CreateAnswer :: Error. " + ex.getMessage());
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @PatchMapping("/{answerId}/upvote")
     public ResponseEntity<?> upVote(@PathVariable("answerId") String answerId, HttpServletRequest request) {
-        System.out.println("\nUpvote :: for answer: " + answerId);
+        log.info("Upvote :: for answer: " + answerId);
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
@@ -131,7 +131,7 @@ public class AnswerController {
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
-        if(answerEntity == null) {
+        if (answerEntity == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match found"));
         }
         Response response = new Response();
@@ -139,25 +139,24 @@ public class AnswerController {
             answerEntity.upvote();
             answerEntity = answerRepository.save(answerEntity);
             response = new Response(true, "Answer upVoted");
-            //response.getData().put("answer", answerEntity.toAnswerModel());
             response.addObject("answer", answerEntity.toAnswerModel());
 
-            System.out.println("Upvote :: Saved successfully. " + answerEntity.toString());
+            log.info("Upvote :: Saved successfully. " + answerEntity.toString());
             //sending topicAnswerVoted
-            System.out.println("topicAnswerVoted:: sending - upvote");
+            log.info("topicAnswerVoted:: sending - upvote");
             kafkaTemplate.send(env.getProperty("topicAnswerVoted"), gson.toJson(answerEntity.toAnswerQueueModel()));
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             response.setSuccess(false);
             response.setMessage(ex.getMessage());
-            System.out.println("Upvote :: Error. " + ex.getMessage());
+            log.warn("Upvote :: Error. " + ex.getMessage());
         }
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{answerId}/downvote")
-    public ResponseEntity<?> downVote(@PathVariable("answerId") String answerId,  HttpServletRequest request) {
-        System.out.println("\ndownvote :: for answer: " + answerId);
+    public ResponseEntity<?> downVote(@PathVariable("answerId") String answerId, HttpServletRequest request) {
+
+        log.info("downvote :: for answer: " + answerId);
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
 
@@ -166,7 +165,7 @@ public class AnswerController {
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
-        if(answerEntity == null) {
+        if (answerEntity == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No answer match found"));
         }
         Response response = new Response();
@@ -176,31 +175,32 @@ public class AnswerController {
             response = new Response(true, "Answer downvoted");
             //response.getData().put("answer", answerEntity.toAnswerModel());
             response.addObject("answer", answerEntity.toAnswerModel());
-            System.out.println("Downvote :: Saved successfully. " + answerEntity.toString());
+            log.info("Downvote :: Saved successfully. " + answerEntity.toString());
 
             //sending topicAnswerVoted
-            System.out.println("topicAnswerVoted:: sending - downvote");
+            log.info("topicAnswerVoted:: sending - downvote");
             kafkaTemplate.send(env.getProperty("topicAnswerVoted"), gson.toJson(answerEntity.toAnswerQueueModel()));
         } catch (Exception ex) {
             response.setSuccess(false);
             response.setMessage(ex.getMessage());
-            System.out.println("Upvote :: Error. " + ex.getMessage());
+            log.warn("Upvote :: Error. " + ex.getMessage());
         }
 
         return ResponseEntity.ok(response);
     }
 
     @PatchMapping("/{answerId}")
-    public ResponseEntity<?> updateAnswer(@PathVariable("answerId") String answerId, @RequestBody @Valid AnswerReqModel answerReqModel, @RequestHeader("Authorization") String token) {
-        System.out.println("\nupdate content :: for answer: " + answerId);
+    public ResponseEntity<?> updateAnswer(@PathVariable("answerId") String answerId, @RequestBody @Valid AnswerReqModel answerReqModel, HttpServletRequest request) {
+        log.info("update content :: for answer: " + answerId);
         //Check if request is authorized
-        Response authCheckResp = isAuthorized(token);
+        Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
-        if(answerEntity == null) {
+        if (answerEntity == null) {
+
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match answer found"));
         }
         AnswerEntity newAnswerEntity = new AnswerEntity(answerReqModel);
@@ -210,30 +210,29 @@ public class AnswerController {
             answerEntity.setLastEdited(newAnswerEntity.getCreated());
             answerEntity = answerRepository.save(answerEntity);
             response = new Response(true, "Answer updated");
-            //response.getData().put("answer", answerEntity.toAnswerModel());
             response.addObject("answer", answerEntity.toAnswerModel());
-            System.out.println("Saved successfully. " + answerEntity.toString());
+            log.info("Saved successfully. " + answerEntity.toString());
 
         } catch (Exception ex) {
             response.setSuccess(false);
             response.setMessage(ex.getMessage());
-            System.out.println("Update Content :: Error. " + ex.getMessage());
+            log.warn("Update Content :: Error. " + ex.getMessage());
         }
 
         return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{answerId}")
-    public ResponseEntity<?> deleteAnswer(@PathVariable("answerId") String answerId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<?> deleteAnswer(@PathVariable("answerId") String answerId, HttpServletRequest request) {
         System.out.println("\nDelete :: Answer: " + answerId);
         //Check if request is authorized
-        Response authCheckResp = isAuthorized(token);
+        Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
-        if(answerEntity == null) {
+        if (answerEntity == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match found"));
         }
         Response response = new Response();
@@ -244,7 +243,7 @@ public class AnswerController {
             //response.getData().put("answer", answerEntity.toAnswerModel());
             response.addObject("answer", answerEntity.toAnswerModel());
             System.out.println("Deleted successfully. " + answerEntity.toString());
-        }catch (Exception ex) {
+        } catch (Exception ex) {
             response.setSuccess(false);
             response.setMessage(ex.getMessage());
             System.out.println("Delete Answer :: Error. " + ex.getMessage());
