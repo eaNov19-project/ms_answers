@@ -42,8 +42,8 @@ public class AnswerEntity {
         Answer answerModel = new Answer();
         answerModel.setId(this.id);
         answerModel.setBody(this.body);
-        answerModel.setDate(this.created);
-        answerModel.setUpvotes(this.votes);
+        answerModel.setCreated(this.created);
+        answerModel.setVotes(this.votes);
         answerModel.setUserId(this.userId);
         answerModel.setQuestionId(this.questionId);
         answerModel.setActive(this.active);
