@@ -57,7 +57,7 @@ public class AnswerController {
         return new ResponseEntity<>("Answer service. Host: " + host, HttpStatus.OK);
     }
 
-    @GetMapping("/questions/{questionId}")
+    @GetMapping("/question/{questionId}")
     public ResponseEntity<?> getAllAnswersByQuestionId(@PathVariable("questionId") String questionId) {
         List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
         List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
