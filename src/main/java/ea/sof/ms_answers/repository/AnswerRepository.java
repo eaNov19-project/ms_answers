@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface AnswerRepository extends MongoRepository<AnswerEntity, String> {
     Optional<AnswerEntity> findById(String id);
 
-    List<AnswerEntity> findAnswerEntitiesByQuestionId(String questionId);
+    List<AnswerEntity> findAnswerEntitiesByQuestionIdAndActiveEquals(String questionId, Integer active);
 }
