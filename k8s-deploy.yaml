@@ -5,7 +5,7 @@ metadata:
   labels:
     app: answer-ms
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: answer-ms
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.0
+          image: islamahmad/eaproj-answerms:1.0.3
           env:
             #MONGODB
             - name: MONGODB_HOST

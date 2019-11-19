@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -42,16 +44,17 @@ public class AnswerController {
 
     private Gson gson = new Gson();
 
-    /*@GetMapping
-    public ResponseEntity<?> getAllAnswers() {
-        List<AnswerEntity> answerEntities = answerRepository.findAll();
-        List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
+    @GetMapping("/health")
+    public ResponseEntity<?> index() {
+        String host = "Unknown host";
+        try {
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
 
-        Response response = new Response(true, "");
-        response.getData().put("answers", answers);
-
-        return ResponseEntity.ok(response);
-    }*/
+        return new ResponseEntity<>("Answer service. Host: " + host, HttpStatus.OK);
+    }
 
     @GetMapping("/question/{questionId}")
     public ResponseEntity<?> getAllAnswersByQuestionId(@PathVariable("questionId") String questionId) {
@@ -63,7 +66,6 @@ public class AnswerController {
 
         return ResponseEntity.ok(response);
     }
-
 
     @GetMapping("/{answerId}")
     public ResponseEntity<?> getAnswerById(@PathVariable("answerId") String answerId) {
@@ -252,18 +254,27 @@ public class AnswerController {
     }
 
     private Response isAuthorized(String authHeader) {
+        System.out.print("JWT :: Checking authorization... ");
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("Invalid token. Header null or 'Bearer ' is not provided.");
             return new Response(false, "Invalid token");
         }
         try {
+            System.out.print("Calling authService.validateToken... ");
             ResponseEntity<Response> result = authService.validateToken(authHeader);
 
+            System.out.print("AuthService replied... ");
             if (!result.getBody().getSuccess()) {
+                System.out.println("Filed to authorize. JWT is invalid");
                 return new Response(false, "Invalid token");
             }
+
+            System.out.println("Authorized successfully");
             return result.getBody();
 
-        }catch (Exception e){
+        } catch (Exception e) {
+            System.out.println("Failed. " + e.getMessage());
             return new Response(false, "exception", e);
         }
     }
