@@ -49,9 +49,11 @@ spec:
                 configMapKeyRef:
                   name: answer-ms
                   key: MONGODB_DATABASE
+
+            # GLOBAL
             - name: AUTHENTICATE_SERVICE
               valueFrom:
                 configMapKeyRef:
-                  name: answer-ms
+                  name: services-global
                   key: AUTHENTICATE_SERVICE
 

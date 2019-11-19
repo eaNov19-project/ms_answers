@@ -10,5 +10,5 @@ data:
   MONGODB_USERNAME: "answers"
   MONGODB_DATABASE: "answers"
   MONGODB_AUTH: "answers"
-  AUTHENTICATE_SERVICE: "authentication-service.default.svc.cluster.local:8080"
+#  AUTHENTICATE_SERVICE: "authentication-service.default.svc.cluster.local:8080"
 
