@@ -16,8 +16,12 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.5
+          image: islamahmad/eaproj-answerms:1.0.6
+
           env:
+            - name: SERVER_PORT
+              value: "8080"
+
             #MONGODB
             - name: MONGODB_HOST
               valueFrom:
@@ -56,4 +60,9 @@ spec:
                 configMapKeyRef:
                   name: services-global
                   key: AUTHENTICATE_SERVICE
+            - name: SERVICE_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: services-global
+                  key: SERVICE_SECRET
 
