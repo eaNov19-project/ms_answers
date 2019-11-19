@@ -101,6 +101,7 @@ public class AnswerController {
         AnswerEntity answerEntity = new AnswerEntity(answerReqModel);
         answerEntity.setQuestionId(questionId);
         answerEntity.setUserId(decodedToken.getUserId().toString());
+        answerEntity.setUserEmail(decodedToken.getEmail());
 
         Response response = new Response();
         try {

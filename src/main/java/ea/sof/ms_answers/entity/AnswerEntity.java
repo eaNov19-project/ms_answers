@@ -24,6 +24,7 @@ public class AnswerEntity {
     @Id
     private String id;
     private String userId;
+    private String userEmail;
     private String body;
     private LocalDateTime created;
     private LocalDateTime lastEdited;
@@ -45,6 +46,7 @@ public class AnswerEntity {
         answerModel.setCreated(this.created);
         answerModel.setVotes(this.votes);
         answerModel.setUserId(this.userId);
+        answerModel.setUserEmail(this.userEmail);
         answerModel.setQuestionId(this.questionId);
         answerModel.setActive(this.active);
         List<CommentAnswer> topComments = this.topComments.stream().map(ca -> ca.toCommentAnswerModel()).collect(Collectors.toList());
