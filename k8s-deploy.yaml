@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.4
+          image: islamahmad/eaproj-answerms:1.0.5
           env:
             #MONGODB
             - name: MONGODB_HOST
