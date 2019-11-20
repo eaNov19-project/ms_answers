@@ -34,9 +34,9 @@ public class SubsBanAnswerToAnswer {
         LOGGER.info("SubsBanAnswerToAnswer: New message from topic: " + message);
 
         Gson gson = new Gson();
-        AnswerQueueModel answerQueueModel =  gson.fromJson(message, AnswerQueueModel.class);
+        String answerId =  gson.fromJson(message, String.class);
 
-        String answerId = answerQueueModel.getId();
+       // String answerId = answerQueueModel.getId();
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
 
