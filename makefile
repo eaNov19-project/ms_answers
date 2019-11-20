@@ -1,5 +1,5 @@
 DOCKERHUBREPO=islamahmad
-IMAGE=${DOCKERHUBREPO}/eaproj-answerms:1.0.8
+IMAGE=${DOCKERHUBREPO}/eaproj-answerms:1.0.9
 
 # ===== Maven =====
 maven-rebuild:
