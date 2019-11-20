@@ -34,10 +34,10 @@ public class SubsBanAnswerToAnswer {
         LOGGER.info("SubsBanAnswerToAnswer: New message from topic: " + message);
 
         Gson gson = new Gson();
-        String answerId =  gson.fromJson(message, String.class);
+        String answerId =  "";
         AnswerQueueModel answerQueueModel = null;
         try {
-            answerQueueModel =  gson.fromJson(message, AnswerQueueModel.class);
+            answerId =  gson.fromJson(message, String.class);
         }catch (Exception ex){
             LOGGER.warn("SubsBanAnswerToAnswer: failed to decode json to AnswerQueueModel object");
             return;
