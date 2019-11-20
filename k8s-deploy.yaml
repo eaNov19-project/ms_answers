@@ -16,11 +16,11 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.10
+          image: islamahmad/eaproj-answerms:1.0.11
 
           env:
             - name: APP_VERSION
-              value: "islamahmad/eaproj-answerms:1.0.10"
+              value: "islamahmad/eaproj-answerms:1.0.11"
 
             - name: SERVER_PORT
               value: "8080"

@@ -37,7 +37,8 @@ public class SubsBanAnswerToAnswer {
         String answerId =  "";
         AnswerQueueModel answerQueueModel = null;
         try {
-            answerId =  gson.fromJson(message, String.class);
+//            answerId =  gson.fromJson(message, String.class);
+            answerId = message;
         }catch (Exception ex){
             LOGGER.warn("SubsBanAnswerToAnswer: failed to decode json to AnswerQueueModel object");
             return;

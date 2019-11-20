@@ -1,5 +1,5 @@
 DOCKERHUBREPO=islamahmad
-IMAGE=${DOCKERHUBREPO}/eaproj-answerms:1.0.10
+IMAGE=${DOCKERHUBREPO}/eaproj-answerms:1.0.11
 
 # ===== Maven =====
 maven-rebuild:
@@ -26,7 +26,7 @@ k8-delete:
 
 k8-restart: k8-delete k8-install
 
-k8-repush-restart: k8-delete docker-push k8-install
+k8-repush-restart: docker-push k8-delete k8-install
 
 
 
