@@ -85,7 +85,7 @@ public class AnswerController {
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authCheckResp);
         }
 
         ObjectMapper mapper = new ObjectMapper();
@@ -120,7 +120,7 @@ public class AnswerController {
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authCheckResp);
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
@@ -154,7 +154,7 @@ public class AnswerController {
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
 
         if (!authCheckResp.getSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authCheckResp);
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
@@ -188,7 +188,7 @@ public class AnswerController {
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authCheckResp);
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
@@ -221,7 +221,7 @@ public class AnswerController {
         //Check if request is authorized
         Response authCheckResp = isAuthorized(request.getHeader("Authorization"));
         if (!authCheckResp.getSuccess()) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Response(false, "Invalid Token"));
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(authCheckResp);
         }
 
         AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
