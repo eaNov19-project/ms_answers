@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.7
+          image: islamahmad/eaproj-answerms:1.0.8
 
           env:
             - name: SERVER_PORT
