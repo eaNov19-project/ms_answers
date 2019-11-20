@@ -6,9 +6,8 @@ metadata:
 data:
   MONGODB_HOST: "mongodb-sharded-1573848232.default.svc.cluster.local"
   MONGODB_PORT: "27017"
-  MONGODB_PASS: "answers"
+#  MONGODB_PASS: "answers"
   MONGODB_USERNAME: "answers"
   MONGODB_DATABASE: "answers"
   MONGODB_AUTH: "answers"
-#  AUTHENTICATE_SERVICE: "authentication-service.default.svc.cluster.local:8080"
 

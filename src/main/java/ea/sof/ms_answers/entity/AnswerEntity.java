@@ -2,10 +2,8 @@ package ea.sof.ms_answers.entity;
 
 import ea.sof.ms_answers.model.AnswerReqModel;
 import ea.sof.shared.entities.CommentAnswerEntity;
-import ea.sof.shared.entities.CommentQuestionEntity;
 import ea.sof.shared.models.Answer;
 import ea.sof.shared.models.CommentAnswer;
-import ea.sof.shared.models.CommentQuestion;
 import ea.sof.shared.queue_models.AnswerQueueModel;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,7 @@
 package ea.sof.ms_answers.kafka;
 
 import com.google.gson.Gson;
+import ea.sof.ms_answers.controller.AnswerController;
 import ea.sof.ms_answers.entity.AnswerEntity;
 import ea.sof.ms_answers.repository.AnswerRepository;
 import ea.sof.shared.entities.CommentAnswerEntity;
@@ -15,15 +16,17 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class SubsBanAnswerToAnswer {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AnswerController.class);
+
     @Autowired
     AnswerRepository answerRepository;
+
     @Autowired
     private Environment env;
 
     @Autowired
     KafkaTemplate<String, String> kafkaTemplate;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SubsBanAnswerToAnswer.class);
 
     @KafkaListener(topics = "${topicBanAnswer}", groupId = "${subsBanAnswerToAnswer}")
     public void newCommentAnswerEntity(String message) {
@@ -31,6 +34,7 @@ public class SubsBanAnswerToAnswer {
         LOGGER.info("SubsBanAnswerToAnswer: New message from topic: " + message);
 
         Gson gson = new Gson();
+        String answerId =  gson.fromJson(message, String.class);
         AnswerQueueModel answerQueueModel = null;
         try {
             answerQueueModel =  gson.fromJson(message, AnswerQueueModel.class);
@@ -39,7 +43,7 @@ public class SubsBanAnswerToAnswer {
             return;
         }
 
-        String answerId = answerQueueModel.getId();
+       // String answerId = answerQueueModel.getId();
 
         AnswerEntity answerEntity = null;
 
@@ -58,6 +62,8 @@ public class SubsBanAnswerToAnswer {
             //sending topicUpdateBannedAnswer
             LOGGER.info("topicUpdateBannedAnswer:: sending");
             kafkaTemplate.send(env.getProperty("topicUpdateBannedAnswer"), gson.toJson(answerEntity.toAnswerQueueModel()));
+        } else{
+            LOGGER.warn("Answer not found. Id: " + answerId);
         }
     }
 }

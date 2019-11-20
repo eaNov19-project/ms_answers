@@ -16,53 +16,27 @@ spec:
     spec:
       containers:
         - name: answer-ms
-          image: islamahmad/eaproj-answerms:1.0.8
+          image: islamahmad/eaproj-answerms:1.0.10
 
           env:
+            - name: APP_VERSION
+              value: "islamahmad/eaproj-answerms:1.0.10"
+
             - name: SERVER_PORT
               value: "8080"
 
             #MONGODB
-            - name: MONGODB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: answer-ms
-                  key: MONGODB_HOST
-            - name: MONGODB_USERNAME
-              valueFrom:
-                configMapKeyRef:
-                  name: answer-ms
-                  key: MONGODB_USERNAME
-            - name: MONGODB_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: answer-ms
-                  key: MONGODB_PORT
             - name: MONGODB_PASS
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   name: answer-ms
                   key: MONGODB_PASS
-            - name: MONGODB_AUTH
-              valueFrom:
-                configMapKeyRef:
-                  name: answer-ms
-                  key: MONGODB_AUTH
-            - name: MONGODB_DATABASE
-              valueFrom:
-                configMapKeyRef:
-                  name: answer-ms
-                  key: MONGODB_DATABASE
 
-            # GLOBAL
-            - name: AUTHENTICATE_SERVICE
-              valueFrom:
-                configMapKeyRef:
-                  name: services-global
-                  key: AUTHENTICATE_SERVICE
-            - name: SERVICE_SECRET
-              valueFrom:
-                configMapKeyRef:
-                  name: services-global
-                  key: SERVICE_SECRET
+          envFrom:
+            - configMapRef:
+                name: answer-ms
+            - configMapRef:
+                name: services-global
+            - configMapRef:
+                name: kafka-global
 
