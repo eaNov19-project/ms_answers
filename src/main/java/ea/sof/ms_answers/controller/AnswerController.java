@@ -70,7 +70,24 @@ public class AnswerController {
 
 		Response response = new Response(true, "");
 		try {
-			List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
+			List<AnswerEntity> answerEntities = answerRepository.findAllAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
+			List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
+
+			response.getData().put("answers", answers);
+		} catch (Exception ex) {
+			LOGGER.error("Error while accessing database: " + ex.getMessage());
+			return ResponseEntity.ok(new Response(false, "Error while accessing database. Call admin +1 424 321 9482"));
+		}
+		return ResponseEntity.ok(response);
+	}
+
+	@GetMapping("/users/{userId}")
+	public ResponseEntity<?> getAllAnswersByUserId(@PathVariable("userId") String userId) {
+		LOGGER.info("getAllAnswersByUserId :: userId: " + userId);
+
+		Response response = new Response(true, "");
+		try {
+			List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByUserId(userId);
 			List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).collect(Collectors.toList());
 
 			response.getData().put("answers", answers);
@@ -279,7 +296,7 @@ public class AnswerController {
 
     @GetMapping("/top5/{questionId}")
     public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
-        List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
+        List<AnswerEntity> answerEntities = answerRepository.findAllAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
         answerEntities = answerEntities.stream().sorted(Comparator.comparingInt(AnswerEntity::getVotes).reversed()).limit(5).collect(Collectors.toList());
 //        Response response = new Response(true, "");
 //        response.getData().put("answers", answerEntities);
