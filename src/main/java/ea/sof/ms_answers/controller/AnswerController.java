@@ -256,9 +256,9 @@ public class AnswerController {
         if (answerEntity == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match found"));
         }
-        Response response = new Response(true, "");
-        response.getData().put("answer", answerEntity);
-        return ResponseEntity.ok(response);
+//        Response response = new Response(true, "");
+//        response.getData().put("answer", answerEntity);
+        return ResponseEntity.ok(answerEntity);
     }
 
     @GetMapping("/top5/{questionId}")

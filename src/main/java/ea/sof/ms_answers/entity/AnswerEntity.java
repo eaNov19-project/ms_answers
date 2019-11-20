@@ -62,6 +62,7 @@ public class AnswerEntity {
         answerQueueModel.setBody(this.body);
         answerQueueModel.setActive(this.active);
         answerQueueModel.setQuestionId(this.questionId);
+        answerQueueModel.setVotes(this.votes);
         return answerQueueModel;
     }
 
