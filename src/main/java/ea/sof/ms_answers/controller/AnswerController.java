@@ -277,14 +277,6 @@ public class AnswerController {
 		return ResponseEntity.ok(answerEntity);
 	}
 
-	@GetMapping("/top5/{questionId}")
-	public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
-		List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
-		List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).sorted(Comparator.comparingInt(Answer::getVotes).reversed()).limit(5).collect(Collectors.toList());
-		Response response = new Response(true, "");
-		response.getData().put("answers", answers);
-		return ResponseEntity.ok(response);
-	}
     @GetMapping("/top5/{questionId}")
     public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
         List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
