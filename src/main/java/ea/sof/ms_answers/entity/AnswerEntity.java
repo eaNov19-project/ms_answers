@@ -42,15 +42,17 @@ public class AnswerEntity {
     public Answer toAnswerModel() {
         Answer answerModel = new Answer();
         answerModel.setId(this.id);
+        answerModel.setUserId(this.userId);
+        answerModel.setUserEmail(this.userEmail);
         answerModel.setBody(this.body);
         answerModel.setCreated(this.created);
         answerModel.setVotes(this.votes);
-        answerModel.setUserId(this.userId);
-        answerModel.setUserEmail(this.userEmail);
-        answerModel.setQuestionId(this.questionId);
-        answerModel.setActive(this.active);
+
         List<CommentAnswer> topComments = this.topComments.stream().map(ca -> ca.toCommentAnswerModel()).collect(Collectors.toList());
         answerModel.setTopComments(topComments);
+
+        answerModel.setQuestionId(this.questionId);
+        answerModel.setActive(this.active);
         return answerModel;
     }
 

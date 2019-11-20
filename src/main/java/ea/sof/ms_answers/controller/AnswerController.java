@@ -79,14 +79,6 @@ public class AnswerController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/top5/{questionId}")
-    public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
-        List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
-        List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).sorted(Comparator.comparingInt(Answer::getVotes).reversed()).limit(5).collect(Collectors.toList());
-        Response response = new Response(true, "");
-        response.getData().put("answers", answers);
-        return ResponseEntity.ok(response);
-    }
 
     @PostMapping("/{questionId}")
     public ResponseEntity<?> createAnswer(@RequestBody @Valid AnswerReqModel answerReqModel, @PathVariable("questionId") String questionId, HttpServletRequest request) {
@@ -250,6 +242,31 @@ public class AnswerController {
             System.out.println("Delete Answer :: Error. " + ex.getMessage());
         }
 
+        return ResponseEntity.ok(response);
+    }
+
+
+
+    //****************FOR SERVICES*****************//
+
+    @GetMapping("/{answerId}/entity")
+    public ResponseEntity<?> getAnswerEntityById(@PathVariable("answerId") String answerId) {
+        //TODO: add token authentication for services
+        AnswerEntity answerEntity = answerRepository.findById(answerId).orElse(null);
+        if (answerEntity == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Response(false, "No match found"));
+        }
+        Response response = new Response(true, "");
+        response.getData().put("answer", answerEntity);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/top5/{questionId}")
+    public ResponseEntity<?> getTopFiveAnswers(@PathVariable("questionId") String questionId) {
+        List<AnswerEntity> answerEntities = answerRepository.findAnswerEntitiesByQuestionIdAndActiveEquals(questionId, 1);
+        List<Answer> answers = answerEntities.stream().map(ans -> ans.toAnswerModel()).sorted(Comparator.comparingInt(Answer::getVotes).reversed()).limit(5).collect(Collectors.toList());
+        Response response = new Response(true, "");
+        response.getData().put("answers", answers);
         return ResponseEntity.ok(response);
     }
 
