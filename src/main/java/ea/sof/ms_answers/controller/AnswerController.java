@@ -314,27 +314,28 @@ public class AnswerController {
     }
 
     private Response isAuthorized(String authHeader) {
-        System.out.print("JWT :: Checking authorization... ");
+        LOGGER.info("JWT :: Checking authorization... ");
 
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            System.out.println("Invalid token. Header null or 'Bearer ' is not provided.");
+            LOGGER.warn("Invalid token. Header null or 'Bearer ' is not provided.");
             return new Response(false, "Invalid token");
         }
         try {
-            System.out.print("Calling authService.validateToken... ");
+            LOGGER.info("Calling authService.validateToken... ");
             ResponseEntity<Response> result = authService.validateToken(authHeader);
 
-            System.out.print("AuthService replied... ");
+            LOGGER.info("AuthService replied... ");
             if (!result.getBody().getSuccess()) {
-                System.out.println("Filed to authorize. JWT is invalid");
-                return new Response(false, "Invalid token");
+                LOGGER.warn("Filed to authorize. JWT is invalid");
+                return result.getBody();
+//				return new Response(false, "Invalid token");
             }
 
-            System.out.println("Authorized successfully");
+            LOGGER.info("Authorized successfully");
             return result.getBody();
 
         } catch (Exception e) {
-            System.out.println("Failed. " + e.getMessage());
+            LOGGER.warn("Failed. " + e.getMessage());
             return new Response(false, "exception", e);
         }
     }
