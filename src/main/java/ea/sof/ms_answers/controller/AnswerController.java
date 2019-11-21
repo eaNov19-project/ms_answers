@@ -124,6 +124,7 @@ public class AnswerController {
 
         ObjectMapper mapper = new ObjectMapper();
         TokenUser decodedToken = mapper.convertValue(authCheckResp.getData().get("decoded_token"), TokenUser.class);
+
         AnswerEntity answerEntity = new AnswerEntity(answerReqModel);
         answerEntity.setQuestionId(questionId);
         answerEntity.setUserId(decodedToken.getUserId().toString());
